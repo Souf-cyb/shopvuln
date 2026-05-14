@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}My Orders{% endblock %}
+{% block content %}
+
+<div class="section-title">My Orders</div>
+<div class="section-sub">Your order history</div>
+
+{% if orders %}
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td><code style="color:#94a3b8;">#{{ "%04d"|format(o[0]) }}</code></td>
+            <td style="color:#94a3b8;">{{ o[6] }}</td>
+            <td style="font-weight:600;color:#3b82f6;">${{ "%.2f"|format(o[2]) }}</td>
+            <td>
+                {% if o[3] == 'confirmed' %}
+                    <span class="badge badge-success">Confirmed</span>
+                {% elif o[3] == 'pending' %}
+                    <span class="badge badge-warning">Pending</span>
+                {% else %}
+                    <span class="badge badge-info">{{ o[3] }}</span>
+                {% endif %}
+            </td>
+            <td>
+                <!-- FAILLE IDOR : n'importe qui peut accéder à /order/{id} -->
+                <a href="/order/{{ o[0] }}" class="btn btn-outline btn-sm">View</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div style="text-align:center;padding:80px;color:#64748b;">
+    <div style="font-size:48px;margin-bottom:16px;">📦</div>
+    <p style="margin-bottom:20px;">No orders yet</p>
+    <a href="/products" class="btn btn-primary">Start Shopping</a>
+</div>
+{% endif %}
+
+{% endblock %}

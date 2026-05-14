@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}{{ product[1] }}{% endblock %}
+{% block content %}
+
+<a href="/products" style="color:#94a3b8;text-decoration:none;font-size:13px;">← Back to Products</a>
+
+<div class="grid-2" style="margin-top:20px;margin-bottom:40px;">
+    <div>
+        <img src="{{ product[6] }}" alt="{{ product[1] }}"
+             style="width:100%;border-radius:12px;border:1px solid #334155;"
+             onerror="this.src='https://via.placeholder.com/600x400/1e293b/94a3b8?text=Product'">
+    </div>
+    <div>
+        <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
+            {{ product[5] }}
+        </div>
+        <h1 style="font-size:26px;font-weight:600;margin-bottom:12px;">{{ product[1] }}</h1>
+        <p style="color:#94a3b8;line-height:1.7;margin-bottom:20px;">{{ product[2] }}</p>
+
+        <div style="font-size:32px;font-weight:700;color:#3b82f6;margin-bottom:8px;">
+            ${{ "%.2f"|format(product[3]) }}
+        </div>
+        <div style="font-size:13px;color:#22c55e;margin-bottom:24px;">
+            ✓ In Stock — {{ product[4] }} units available
+        </div>
+
+        <form method="POST" action="/cart/add/{{ product[0] }}">
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">
+                🛒 Add to Cart
+            </button>
+        </form>
+
+        <div style="margin-top:20px;padding:16px;background:#0f172a;border-radius:8px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="font-size:12px;color:#64748b;">Category</div>
+            <div style="font-size:12px;">{{ product[5] }}</div>
+            <div style="font-size:12px;color:#64748b;">SKU</div>
+            <div style="font-size:12px;font-family:monospace;">SV-{{ "%04d"|format(product[0]) }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews -->
+<div class="section-title" style="margin-bottom:6px;">Customer Reviews</div>
+<div class="section-sub">{{ reviews|length }} review(s)</div>
+
+{% for r in reviews %}
+<div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <b style="font-size:14px;">{{ r[4] }}</b>
+        <span style="color:#f59e0b;">{{ '★' * r[5] }}{{ '☆' * (5 - r[5]) }}</span>
+    </div>
+    <!-- FAILLE XSS : contenu affiché sans échappement -->
+    <p style="color:#94a3b8;font-size:13px;line-height:1.6;">{{ r[3]|safe }}</p>
+</div>
+{% endfor %}
+
+{% if session.user_id %}
+<div class="card" style="margin-top:20px;">
+    <h3 style="margin-bottom:16px;">Write a Review</h3>
+    <form method="POST" action="/product/{{ product[0] }}/review">
+        <div class="form-group">
+            <label>Rating</label>
+            <select name="rating" style="background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:10px;border-radius:8px;width:100%;">
+                <option value="5">★★★★★ (5/5)</option>
+                <option value="4">★★★★☆ (4/5)</option>
+                <option value="3">★★★☆☆ (3/5)</option>
+                <option value="2">★★☆☆☆ (2/5)</option>
+                <option value="1">★☆☆☆☆ (1/5)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Your Review</label>
+            <textarea name="content" rows="4" placeholder="Share your experience..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</div>
+{% else %}
+<div style="text-align:center;padding:20px;color:#64748b;font-size:13px;">
+    <a href="/login" style="color:#3b82f6;">Login</a> to write a review.
+</div>
+{% endif %}
+
+{% endblock %}

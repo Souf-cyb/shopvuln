@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div style="max-width:420px;margin:40px auto;">
+    <div class="card">
+        <div style="text-align:center;margin-bottom:28px;">
+            <div style="font-size:36px;margin-bottom:8px;">🔐</div>
+            <h2 style="font-size:22px;font-weight:600;">Welcome back</h2>
+            <p style="color:#94a3b8;font-size:13px;margin-top:4px;">Sign in to your account</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px;">
+                Sign In
+            </button>
+        </form>
+
+        <div style="text-align:center;margin-top:20px;font-size:13px;color:#94a3b8;">
+            Don't have an account?
+            <a href="/register" style="color:#3b82f6;text-decoration:none;">Sign Up</a>
+        </div>
+
+        <div style="margin-top:20px;padding:12px;background:#0f172a;border-radius:8px;font-size:11px;color:#64748b;">
+            <b style="color:#f59e0b;">⚠️ Demo credentials:</b><br>
+            Admin: <code>admin</code> / <code>admin123</code><br>
+            User: <code>alice</code> / <code>alice123</code><br>
+            SQLi: <code>' OR '1'='1' --</code>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

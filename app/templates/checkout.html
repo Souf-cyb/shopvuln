@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+
+<div class="section-title">Checkout</div>
+<div class="section-sub">Complete your order</div>
+
+<div class="grid-2" style="align-items:start;">
+    <div class="card">
+        <h3 style="margin-bottom:20px;">Payment Details</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label>Delivery Address</label>
+                <textarea name="address" rows="3" placeholder="123 Main St, City, Country" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" name="cardholder" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <!-- FAILLE : numéro de carte envoyé en clair et stocké sans chiffrement -->
+                <label>Card Number</label>
+                <input type="text" name="card_number" placeholder="4242 4242 4242 4242" maxlength="19" required>
+            </div>
+            <div class="grid-2" style="gap:12px;">
+                <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="text" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label>CVV</label>
+                    <input type="text" placeholder="123" maxlength="3" required>
+                </div>
+            </div>
+            <div style="background:#f59e0b22;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;font-size:12px;color:#f59e0b;margin-bottom:18px;">
+                ⚠️ Demo only — Do not use real card details
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+                Place Order — ${{ "%.2f"|format(total) }}
+            </button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom:16px;">Order Summary</h3>
+        {% for item in items %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #334155;">
+            <div>
+                <div style="font-size:13px;font-weight:500;">{{ item[1] }}</div>
+                <div style="font-size:11px;color:#94a3b8;">Qty: {{ item[4] }}</div>
+            </div>
+            <div style="font-size:14px;font-weight:500;">${{ "%.2f"|format(item[2] * item[4]) }}</div>
+        </div>
+        {% endfor %}
+        <div style="display:flex;justify-content:space-between;margin-top:16px;font-size:18px;font-weight:600;">
+            <span>Total</span>
+            <span style="color:#3b82f6;">${{ "%.2f"|format(total) }}</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+
+<div class="section-title">Shopping Cart</div>
+<div class="section-sub">{{ items|length }} item(s) in your cart</div>
+
+{% if items %}
+<div class="grid-2" style="align-items:start;">
+    <div>
+        {% for item in items %}
+        <div class="card" style="margin-bottom:12px;display:flex;gap:16px;align-items:center;">
+            <img src="{{ item[3] }}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;"
+                 onerror="this.src='https://via.placeholder.com/80x60/0f172a/94a3b8?text=Img'">
+            <div style="flex:1;">
+                <div style="font-weight:500;margin-bottom:4px;">{{ item[1] }}</div>
+                <div style="font-size:13px;color:#94a3b8;">Qty: {{ item[4] }}</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:16px;font-weight:600;color:#3b82f6;">${{ "%.2f"|format(item[2] * item[4]) }}</div>
+                <form method="POST" action="/cart/remove/{{ item[0] }}" style="margin-top:6px;">
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card" style="position:sticky;top:80px;">
+        <h3 style="margin-bottom:16px;">Order Summary</h3>
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;color:#94a3b8;">
+            <span>Subtotal</span><span>${{ "%.2f"|format(total) }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;color:#94a3b8;">
+            <span>Shipping</span><span style="color:#22c55e;">Free</span>
+        </div>
+        <div style="border-top:1px solid #334155;margin:16px 0;"></div>
+        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:600;margin-bottom:20px;">
+            <span>Total</span><span style="color:#3b82f6;">${{ "%.2f"|format(total) }}</span>
+        </div>
+        <a href="/checkout" class="btn btn-primary" style="width:100%;justify-content:center;">
+            Proceed to Checkout →
+        </a>
+    </div>
+</div>
+
+{% else %}
+<div style="text-align:center;padding:80px;color:#64748b;">
+    <div style="font-size:48px;margin-bottom:16px;">🛒</div>
+    <p style="margin-bottom:20px;">Your cart is empty</p>
+    <a href="/products" class="btn btn-primary">Browse Products</a>
+</div>
+{% endif %}
+
+{% endblock %}

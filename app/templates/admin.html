@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+    <div style="width:40px;height:40px;background:#ef444422;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">⚙️</div>
+    <div>
+        <div class="section-title" style="margin-bottom:0;">Admin Panel</div>
+        <div style="font-size:13px;color:#94a3b8;">Full access — No role verification on routes</div>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="grid-4" style="margin-bottom:28px;">
+    <div class="card" style="text-align:center;">
+        <div style="font-size:28px;font-weight:600;color:#3b82f6;">{{ users|length }}</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Total Users</div>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div style="font-size:28px;font-weight:600;color:#22c55e;">{{ orders|length }}</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Total Orders</div>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div style="font-size:28px;font-weight:600;color:#f59e0b;">
+            ${{ "%.0f"|format(orders|sum(attribute=2) if orders else 0) }}
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Revenue</div>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div style="font-size:28px;font-weight:600;color:#ef4444;">6</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Products</div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="section-title" style="font-size:16px;margin-bottom:12px;">Users — Passwords in Cleartext</div>
+<div class="card" style="margin-bottom:24px;">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Username</th><th>Email</th>
+                <th style="color:#ef4444;">Password (clear)</th><th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+        <tr>
+            <td style="color:#64748b;">{{ u[0] }}</td>
+            <td><b>{{ u[1] }}</b></td>
+            <td style="color:#94a3b8;">{{ u[2] }}</td>
+            <!-- FAILLE : mot de passe affiché en clair -->
+            <td><code style="color:#ef4444;background:#ef444411;padding:2px 8px;border-radius:4px;">{{ u[3] }}</code></td>
+            <td>
+                {% if u[4] == 'admin' %}
+                    <span class="badge badge-danger">admin</span>
+                {% else %}
+                    <span class="badge badge-info">user</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Orders Table -->
+<div class="section-title" style="font-size:16px;margin-bottom:12px;">Orders — Card Numbers Exposed</div>
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>User ID</th><th>Total</th>
+                <th>Status</th><th style="color:#ef4444;">Card Number</th><th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td style="color:#64748b;">#{{ "%04d"|format(o[0]) }}</td>
+            <td>{{ o[1] }}</td>
+            <td style="color:#3b82f6;font-weight:500;">${{ "%.2f"|format(o[2]) }}</td>
+            <td><span class="badge badge-success">{{ o[3] }}</span></td>
+            <!-- FAILLE : numéro de carte affiché en clair -->
+            <td><code style="color:#ef4444;background:#ef444411;padding:2px 8px;border-radius:4px;">{{ o[5] or 'N/A' }}</code></td>
+            <td style="color:#94a3b8;font-size:12px;">{{ o[6] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

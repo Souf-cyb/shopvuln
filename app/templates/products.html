@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Products{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+    <div>
+        <div class="section-title">Products</div>
+        <div class="section-sub">{{ products|length }} items available</div>
+    </div>
+    <form method="GET" action="/products" style="display:flex;gap:8px;">
+        <input type="text" name="q" value="{{ query }}"
+               placeholder="Search products..."
+               style="background:#1e293b;border:1px solid #334155;color:#e2e8f0;padding:10px 16px;border-radius:8px;font-size:14px;width:260px;">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+
+{% if query %}
+<div style="margin-bottom:20px;font-size:13px;color:#94a3b8;">
+    Results for: <b style="color:#e2e8f0;">{{ query }}</b>
+</div>
+{% endif %}
+
+<div class="grid-3">
+{% for p in products %}
+<div class="product-card">
+    <img src="{{ p[6] }}" alt="{{ p[1] }}"
+         onerror="this.src='https://via.placeholder.com/400x180/1e293b/94a3b8?text=Product'">
+    <div class="pc-body">
+        <div class="pc-category">{{ p[5] }}</div>
+        <div class="pc-name">{{ p[1] }}</div>
+        <div class="pc-desc">{{ p[2] }}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+            <span style="font-size:11px;color:#22c55e;">✓ In Stock ({{ p[4] }})</span>
+        </div>
+        <div class="pc-footer" style="margin-top:12px;">
+            <div class="pc-price">${{ "%.2f"|format(p[3]) }}</div>
+            <div style="display:flex;gap:8px;">
+                <a href="/product/{{ p[0] }}" class="btn btn-outline btn-sm">Details</a>
+                <form method="POST" action="/cart/add/{{ p[0] }}" style="display:inline;">
+                    <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div style="grid-column:1/-1;text-align:center;padding:60px;color:#64748b;">
+    No products found for "{{ query }}"
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}
